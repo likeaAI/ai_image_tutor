@@ -226,6 +226,47 @@
         </div>
 
         <!-- Master Textarea (Apple Graphite Glass Surface) -->
+                <!-- [VIDEO MODE ONLY] 2-Clip Storyline Continuity Director -->
+        <div id="videoClipTimelineBar" class="hidden p-3 rounded-2xl bg-[#161618]/90 border border-white/15 space-y-2 mb-2 transition">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#30d158] animate-pulse"></span>
+              <span class="text-xs font-semibold text-white tracking-tight">🎬 2-클립 연속 스토리 타임라인 (Timeline Director)</span>
+              <span class="text-[10px] text-neutral-400 font-mono hidden sm:inline">(Google Veo 2 / Sora 10s + 10s 연속 연장)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="autoSplitStorylineInto2Clips()" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/15 text-neutral-200 text-xs font-medium border border-white/10 transition flex items-center gap-1 cursor-pointer active:scale-95">
+                <span>🪄</span> 2클립 자동 분할 디렉팅
+              </button>
+            </div>
+          </div>
+
+          <!-- Segmented Timeline Clip Switcher -->
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="tabVideoClip1" onclick="switchVideoClipTab('clip1')" class="p-2.5 rounded-xl border text-left transition cursor-pointer bg-[#0071e3] border-[#0071e3] text-white shadow-md">
+              <div class="flex items-center justify-between text-[11px] font-semibold">
+                <span>클립 1: 최초 생성 샷 (0s ~ 10s)</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-white/20 font-mono">도입 & 환경</span>
+              </div>
+              <p class="text-[10px] text-neutral-200 mt-0.5 line-clamp-1" id="clip1PreviewLabel">주인공 등장 및 초기 카메라 무빙</p>
+            </button>
+
+            <button type="button" id="tabVideoClip2" onclick="switchVideoClipTab('clip2')" class="p-2.5 rounded-xl border text-left transition cursor-pointer bg-black/40 border-white/10 text-neutral-400 hover:text-white hover:border-white/20">
+              <div class="flex items-center justify-between text-[11px] font-semibold">
+                <span>클립 2: 연속 연장 샷 (10s ~ 20s)</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-white/10 font-mono">연속 액션 & 전환</span>
+              </div>
+              <p class="text-[10px] text-neutral-400 mt-0.5 line-clamp-1" id="clip2PreviewLabel">클립1과 외형/조명을 100% 유지하며 다음 액션 전개</p>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] px-1 text-neutral-300">
+            <span id="activeClipIndicatorText" class="font-medium text-[#2997ff]">📌 현재 편집 중: [클립 1] 최초 10초 프롬프트 (주인공, 초기 환경, 도입 무빙)</span>
+            <span class="text-[10px] text-neutral-500">클립 2 작성 시 인물·의상·조명 앵커가 자동 유지됩니다</span>
+          </div>
+        </div>
+
+        <!-- Master Textarea (Apple Graphite Glass Surface) -->
         <div class="relative">
           <textarea 
             id="masterInput" 
@@ -3080,7 +3121,111 @@
       }
     ];
 
-        // Tuning Repositories with Intuitive Plain-Language Explanations
+            // =========================================================================
+    // VIDEO CONTINUITY & QUALITY REPOSITORY (Google Veo 2 / Sora / Kling / Runway)
+    // =========================================================================
+    let currentVideoClipTab = 'clip1'; // 'clip1' (0s~10s) or 'clip2' (10s~20s)
+    let videoClip1Story = "";
+    let videoClip2Story = "";
+
+    let activeVideoConsistency = 'character_lock';
+    let activeVideoMotion = 'dolly_tracking';
+    let activeVideoQuality = 'anti_morphing';
+
+    const VIDEO_TUNING_REPO = {
+      consistency: [
+        { 
+          id: 'character_lock', 
+          label: '인물 외형 완벽 고정', 
+          tag: '얼굴/의상/헤어 불변', 
+          desc: '클립이 전환되어도 동일한 얼굴 골격, 이목구비, 헤어스타일, 의상을 100% 오차 없이 유지', 
+          prompt: 'maintaining identical character appearance, exact same facial bone structure, matching costume and hairstyle across all frames' 
+        },
+        { 
+          id: 'lighting_lock', 
+          label: '조명·색온도 지속성', 
+          tag: '깜빡임/밝기 변동 차단', 
+          desc: '프레임 간 갑작스러운 조명 플리커링이나 색감 뒤틀림 없이 일정한 색온도와 방향성 조명 유지', 
+          prompt: 'consistent continuous ambient lighting, persistent cinematic color temperature, seamless exposure stability' 
+        },
+        { 
+          id: 'full_lock', 
+          label: '풀스펙 일관성 앵커', 
+          tag: '인물+조명+공간 일체화', 
+          desc: '인물 외형, 조명 톤, 배경 공간 좌표를 모두 하나로 묶어 완벽한 단일 시퀀스로 연출', 
+          prompt: 'strict temporal coherence, identical subject features, persistent environment geometry and continuous lighting continuity' 
+        }
+      ],
+      cameraMotion: [
+        { 
+          id: 'dolly_tracking', 
+          label: '트래킹 달리 샷', 
+          tag: '피사체 정밀 추적 무빙', 
+          desc: '피사체의 이동 속도에 맞춰 카메라가 일정 거리를 유지하며 유려하게 따라가는 영화적 무빙', 
+          prompt: 'smooth cinematic tracking dolly shot moving dynamically with the subject, stable focal tracking' 
+        },
+        { 
+          id: 'orbit_360', 
+          label: '360도 오빗 회전', 
+          tag: '입체적 공간감 극대화', 
+          desc: '피사체 주위를 360도 매끄럽게 회전하며 공간의 깊이감과 역동성을 보여주는 샷', 
+          prompt: 'majestic 360-degree continuous orbit camera rotation around the subject, dynamic parallax depth' 
+        },
+        { 
+          id: 'slowmo_120fps', 
+          label: '120fps 슬로우모션', 
+          tag: '시간이 멈춘 듯한 감성', 
+          desc: '땀방울, 옷자락, 파편이 공중에 부유하듯 떨어지는 극적인 영화적 고속 카메라 슬로우', 
+          prompt: 'dramatic 120fps ultra slow-motion cinematography, fluid deceleration of rapid movement' 
+        },
+        { 
+          id: 'fpv_drone', 
+          label: 'FPV 다이내믹 플라이', 
+          tag: '광활하고 빠른 비행', 
+          desc: '드론이 공간을 날렵하게 가로지르며 피사체로 급강하하거나 통과하는 스펙터클 무빙', 
+          prompt: 'dynamic high-speed FPV cinematic drone fly-through shot with sweeping sweeping angles' 
+        },
+        { 
+          id: 'steadicam', 
+          label: '유려한 스테디캠', 
+          tag: '자연스러운 1인칭 추격', 
+          desc: '사람이 직접 따라가듯 미세한 리듬감만 남기고 거친 떨림을 완벽히 흡수한 스테디캠', 
+          prompt: 'impeccably stabilized cinematic steadicam shot gliding smoothly through the environment' 
+        }
+      ],
+      qualityBoosters: [
+        { 
+          id: 'anti_morphing', 
+          label: '모핑·워블링 방지', 
+          tag: '인공적인 녹아내림 차단', 
+          desc: 'AI 영상의 고질병인 손가락 변형, 사물 찌그러짐, 신체 융합 현상을 기술적으로 억제', 
+          prompt: 'zero morphing, no temporal flickering, pristine geometric integrity, solid anatomical stability' 
+        },
+        { 
+          id: 'fluid_physics', 
+          label: '실사 유체·의상 물리', 
+          tag: '자연스러운 중력 반응', 
+          desc: '바람에 나부끼는 머리카락, 옷자락 주름, 빗방울과 연기가 실제 지구 물리 법칙대로 자연스럽게 거동', 
+          prompt: 'hyper-realistic fluid dynamics and natural cloth physics simulation, organic wind interaction' 
+        },
+        { 
+          id: 'cinematic_blur', 
+          label: '180° 셔터 모션블러', 
+          tag: '자연스러운 영상 잔상', 
+          desc: '뚝뚝 끊기는 디지털 느낌을 없애고 헐리우드 필름 카메라의 부드러운 모션 잔상 부여', 
+          prompt: 'natural filmic motion blur with 180-degree shutter angle, buttery smooth frame transitions' 
+        },
+        { 
+          id: 'ultra_60fps', 
+          label: '60fps 부드러운 프레임', 
+          tag: '극상의 매끄러움', 
+          desc: '프레임 드롭 없는 고주사율의 매끄러운 렌더링으로 실감 나는 움직임 구현', 
+          prompt: 'smooth 60fps high frame rate temporal fluidity, pristine motion vectors without stutter' 
+        }
+      ]
+    };
+
+    // Tuning Repositories with Intuitive Plain-Language Explanations
     const TUNING_REPO = {
       cameras: [
         { 
@@ -4239,12 +4384,109 @@ You MUST output ONLY a valid JSON object matching this schema exactly (no markdo
       showToast(`'${r.title}' 한-영 학습 해설이 우측에 로드되었습니다!`);
     }
 
+    
+    // =========================================================================
+    // 2-CLIP VIDEO TIMELINE & CONSISTENCY FUNCTIONS
+    // =========================================================================
+    function switchVideoClipTab(tab) {
+      const inputEl = document.getElementById('masterInput');
+      // Save current input to previous tab
+      if (currentVideoClipTab === 'clip1') {
+        videoClip1Story = inputEl.value;
+      } else {
+        videoClip2Story = inputEl.value;
+      }
+
+      currentVideoClipTab = tab;
+
+      const tab1 = document.getElementById('tabVideoClip1');
+      const tab2 = document.getElementById('tabVideoClip2');
+      const indicator = document.getElementById('activeClipIndicatorText');
+
+      if (tab === 'clip1') {
+        if (tab1) tab1.className = "p-2.5 rounded-xl border text-left transition cursor-pointer bg-[#0071e3] border-[#0071e3] text-white shadow-md";
+        if (tab2) tab2.className = "p-2.5 rounded-xl border text-left transition cursor-pointer bg-black/40 border-white/10 text-neutral-400 hover:text-white hover:border-white/20";
+        if (indicator) indicator.innerHTML = "📌 현재 편집 중: <span class='text-[#2997ff] font-semibold'>[클립 1] 최초 10초 프롬프트 (주인공, 초기 환경, 도입 무빙)</span>";
+        inputEl.placeholder = "클립 1 (0s ~ 10s): 시작 장면과 주인공, 첫 번째 카메라 무빙을 작성하세요 (예: 체육관에서 땀 흘리며 몸을 푸는 복서)";
+        inputEl.value = videoClip1Story;
+      } else {
+        if (tab2) tab2.className = "p-2.5 rounded-xl border text-left transition cursor-pointer bg-[#0071e3] border-[#0071e3] text-white shadow-md";
+        if (tab1) tab1.className = "p-2.5 rounded-xl border text-left transition cursor-pointer bg-black/40 border-white/10 text-neutral-400 hover:text-white hover:border-white/20";
+        if (indicator) indicator.innerHTML = "📌 현재 편집 중: <span class='text-[#30d158] font-semibold'>[클립 2] 연속 연장 10초 프롬프트 (동일 인물/의상 100% 유지하며 다음 액션 전개)</span>";
+        inputEl.placeholder = "클립 2 (10s ~ 20s): 클립 1에 이어서 일어날 연속 액션을 작성하세요 (예: 링 위에서 전광석화 같은 카운터 펀치를 날리는 슬로우모션)";
+        inputEl.value = videoClip2Story;
+      }
+
+      updateClipPreviewLabels();
+      updateDiagnosis();
+      compileMasterPrompt();
+    }
+
+    function updateClipPreviewLabels() {
+      const p1 = document.getElementById('clip1PreviewLabel');
+      const p2 = document.getElementById('clip2PreviewLabel');
+      if (p1) p1.innerText = videoClip1Story.trim() ? videoClip1Story.trim().slice(0, 30) + '...' : '주인공 등장 및 초기 카메라 무빙';
+      if (p2) p2.innerText = videoClip2Story.trim() ? videoClip2Story.trim().slice(0, 30) + '...' : '클립1과 외형/조명을 100% 유지하며 다음 액션 전개';
+    }
+
+    function autoSplitStorylineInto2Clips() {
+      const inputEl = document.getElementById('masterInput');
+      let text = (currentVideoClipTab === 'clip1' ? inputEl.value : (videoClip1Story || inputEl.value)).trim();
+      
+      if (!text) {
+        text = "체육관에서 땀 흘리며 결의에 찬 눈빛으로 몸을 푸는 권투 선수, 이어서 링 위에서 폭발적인 펀치를 날리는 슬로우모션";
+      }
+
+      // Split logic based on transition words
+      const splitKeywords = ["이어서", "다음으로", "그 후", "그리고 나서", "하지만", "점차", "화면이 전환되며", "연속해서", "하다가", "후에", ","];
+      let part1 = text;
+      let part2 = "";
+
+      for (const kw of splitKeywords) {
+        if (text.includes(kw)) {
+          const parts = text.split(kw);
+          part1 = parts[0].trim();
+          part2 = parts.slice(1).join(kw).trim();
+          break;
+        }
+      }
+
+      if (!part2) {
+        // Cut in half if no keywords
+        const words = text.split(" ");
+        if (words.length >= 4) {
+          const half = Math.floor(words.length / 2);
+          part1 = words.slice(0, half).join(" ") + " (오프닝 설정)";
+          part2 = "동일한 인물이 " + words.slice(half).join(" ") + " (연속 액션 전개)";
+        } else {
+          part1 = text + " (오프닝 샷)";
+          part2 = "동일한 인물의 연속 동작 및 클라이맥스 샷";
+        }
+      }
+
+      videoClip1Story = part1;
+      videoClip2Story = part2;
+
+      if (currentVideoClipTab === 'clip1') {
+        inputEl.value = videoClip1Story;
+      } else {
+        inputEl.value = videoClip2Story;
+      }
+
+      updateClipPreviewLabels();
+      updateDiagnosis();
+      compileMasterPrompt();
+      showToast("🪄 [2클립 자동 분할 완료] 클립1(오프닝)과 클립2(연속 연장)로 배분되었습니다!");
+    }
+
     function switchMasterMode(mode) {
       masterMode = mode;
       const tabImg = document.getElementById('tabBtnImage');
       const tabVid = document.getElementById('tabBtnVideo');
       const badge = document.getElementById('currentModeBadge');
       const icon = document.getElementById('brandIcon');
+      const timelineBar = document.getElementById('videoClipTimelineBar');
+      const inputEl = document.getElementById('masterInput');
 
       if (mode === 'image') {
         tabImg.className = "px-4 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 bg-white text-black shadow-md cursor-pointer";
@@ -4253,16 +4495,27 @@ You MUST output ONLY a valid JSON object matching this schema exactly (no markdo
         badge.innerHTML = "🎨 이미지 모드";
         icon.innerText = "";
         targetModel = 'imagen3';
+        if (timelineBar) timelineBar.classList.add('hidden');
+        if (inputEl) inputEl.placeholder = "예: 체육관에서 땀 흘리는 복서의 운동선수 광고 (한글로 편안하게 작성하세요)";
       } else {
         tabVid.className = "px-4 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 bg-white text-black shadow-md cursor-pointer";
         tabImg.className = "px-4 py-1.5 rounded-full text-xs font-medium transition flex items-center gap-1.5 text-neutral-400 hover:text-white cursor-pointer";
         badge.className = "text-[10px] font-medium tracking-wide text-neutral-300 font-mono uppercase bg-white/10 px-2 py-0.5 rounded-full border border-white/10";
-        badge.innerHTML = "🎬 비디오 모드";
-        icon.innerText = "";
+        badge.innerHTML = "🎬 2-클립 비디오 모드 (Google Veo 2 / Sora)";
+        icon.innerText = "🎬";
         targetModel = 'veo';
+        if (timelineBar) timelineBar.classList.remove('hidden');
+        
+        // Initialize 2-clip buffers if empty
+        if (!videoClip1Story && inputEl.value) {
+          videoClip1Story = inputEl.value;
+          videoClip2Story = "동일한 인물의 연속 동작 전개 및 클라이맥스 액션";
+        }
+        updateClipPreviewLabels();
       }
 
       renderModelSelector();
+      renderTuningOptions();
       updateDiagnosis();
       compileMasterPrompt();
     }
@@ -4643,6 +4896,127 @@ You MUST output ONLY a valid JSON object matching this schema exactly (no markdo
     // COMPILE & BILINGUAL ANATOMY VIEWER RENDER
     // =========================================================================
     function compileMasterPrompt() {
+
+      // =========================================================================
+      // [VIDEO DUAL-CLIP SPECIALIZED COMPILER]
+      // =========================================================================
+      if (masterMode === 'video') {
+        const clip1Raw = (videoClip1Story || userRawInput || "결의에 찬 눈빛으로 몸을 풀며 카메라를 응시하는 권투 선수").trim();
+        const clip2Raw = (videoClip2Story || "동일한 권투 선수가 링 위에서 폭발적인 카운터 펀치를 날리는 슬로우모션 액션").trim();
+
+        const clip1En = applyNanoBananaOptimizer(clip1Raw);
+        const clip2En = applyNanoBananaOptimizer(clip2Raw);
+
+        const motionObj = VIDEO_TUNING_REPO.cameraMotion.find(m => m.id === activeVideoMotion) || VIDEO_TUNING_REPO.cameraMotion[0];
+        const consistencyObj = VIDEO_TUNING_REPO.consistency.find(c => c.id === activeVideoConsistency) || VIDEO_TUNING_REPO.consistency[0];
+        const qualityObj = VIDEO_TUNING_REPO.qualityBoosters.find(q => q.id === activeVideoQuality) || VIDEO_TUNING_REPO.qualityBoosters[0];
+        const lightObj = TUNING_REPO.lighting.find(l => l.id === activeLighting) || TUNING_REPO.lighting[0];
+
+        const videoNegative = "--no morphing, jittery motion, abrupt cuts, flickering, distorted limbs, blurry frames, low fps, plastic textures";
+
+        // Clip 1 Prompt: Opening 10s
+        const clip1FullPrompt = `Cinematic video shot (0s-10s): ${clip1En}. ${motionObj.prompt}. ${lightObj.prompt}. ${qualityObj.prompt}. 16:9 widescreen, 24fps filmic shutter. ${videoNegative}`;
+
+        // Clip 2 Prompt: Continuous Extension 10s with Consistency Anchor
+        const clip2FullPrompt = `Continuous video sequence extension (10s-20s): [Strict Continuity Anchor: ${consistencyObj.prompt}]. ${clip2En}. Majestic orbit 360 camera motion with seamless frame transition. Continuous ambient lighting and persistent color temperature. ${qualityObj.prompt}. 16:9 widescreen, 24fps filmic shutter. ${videoNegative}`;
+
+        const fullSequencePrompt = `[COMPLETE 20s SEQUENCE]\n-- CLIP 1 (0s-10s):\n${clip1FullPrompt}\n\n-- CLIP 2 (10s-20s EXTENSION):\n${clip2FullPrompt}`;
+
+        window.videoClip1Prompt = clip1FullPrompt;
+        window.videoClip2Prompt = clip2FullPrompt;
+        window.videoFullSequencePrompt = fullSequencePrompt;
+        window.currentMasterPrompt = fullSequencePrompt;
+
+        displayEl.innerHTML = `
+          <div class="space-y-3">
+            
+            <!-- Clip 1 Card -->
+            <div class="p-3.5 rounded-xl bg-white/[0.04] border border-[#0071e3]/40 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#0071e3]"></span>
+                  <span class="text-xs font-semibold text-white">🎬 클립 1: 최초 10초 샷 (Clip 1 Opening)</span>
+                </div>
+                <button onclick="copyToClipboard(window.videoClip1Prompt, '📋 [클립 1 프롬프트] 복사 완료!', this)" class="px-3 py-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] font-medium transition cursor-pointer active:scale-95 shadow-sm">
+                  클립 1 복사
+                </button>
+              </div>
+              <div class="text-[11px] text-neutral-300 font-sans bg-black/40 p-2 rounded-lg border border-white/5">
+                <span class="text-neutral-400 font-medium">한글 스토리:</span> ${clip1Raw}
+              </div>
+              <div class="text-[11px] text-neutral-200 font-mono leading-relaxed bg-black/60 p-2.5 rounded-lg border border-white/10 break-all select-all">
+                ${clip1FullPrompt}
+              </div>
+            </div>
+
+            <!-- Clip 2 Card -->
+            <div class="p-3.5 rounded-xl bg-white/[0.04] border border-[#30d158]/40 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#30d158]"></span>
+                  <span class="text-xs font-semibold text-white">🎬 클립 2: 연속 연장 샷 (Clip 2 Extension)</span>
+                  <span class="text-[9px] px-2 py-0.2 rounded-full bg-[#30d158]/20 text-[#30d158] font-mono">외형 100% 일관성 앵커 탑재</span>
+                </div>
+                <button onclick="copyToClipboard(window.videoClip2Prompt, '📋 [클립 2 연속 연장 프롬프트] 복사 완료!', this)" class="px-3 py-1 rounded-full bg-[#30d158] hover:bg-emerald-400 text-black text-[11px] font-semibold transition cursor-pointer active:scale-95 shadow-sm">
+                  클립 2 복사
+                </button>
+              </div>
+              <div class="text-[11px] text-neutral-300 font-sans bg-black/40 p-2 rounded-lg border border-white/5">
+                <span class="text-neutral-400 font-medium">연속 연장 스토리:</span> ${clip2Raw}
+              </div>
+              <div class="text-[11px] text-neutral-200 font-mono leading-relaxed bg-black/60 p-2.5 rounded-lg border border-white/10 break-all select-all">
+                ${clip2FullPrompt}
+              </div>
+            </div>
+
+            <!-- Video Continuity & Quality Specification Summary -->
+            <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1.5 text-[11px]">
+              <div class="flex items-center justify-between text-neutral-400 font-semibold border-b border-white/5 pb-1">
+                <span>🔒 적용된 동영상 일관성 & 퀄리티 스펙</span>
+                <span class="text-[#2997ff] font-mono">Google Veo 2 / Sora Spec</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                <div>
+                  <span class="text-neutral-400 block text-[10px]">일관성 유지 앵커</span>
+                  <span class="text-[#30d158] font-medium">${consistencyObj.label} (${consistencyObj.tag})</span>
+                </div>
+                <div>
+                  <span class="text-neutral-400 block text-[10px]">카메라 무빙 역학</span>
+                  <span class="text-[#2997ff] font-medium">${motionObj.label} (${motionObj.tag})</span>
+                </div>
+                <div>
+                  <span class="text-neutral-400 block text-[10px]">왜곡/모핑 차단</span>
+                  <span class="text-[#bf5af2] font-medium">${qualityObj.label} (${qualityObj.tag})</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        // Update Action Buttons for Video
+        if (actionBox) {
+          actionBox.innerHTML = `
+            <button onclick="copyToClipboard(window.videoFullSequencePrompt, '✨ [2-클립 전체 20초 시퀀스] 복사 완료!', this)" class="w-full py-3 px-4 rounded-full text-xs font-medium bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition active:scale-[0.98] cursor-pointer apple-pill-btn">
+              <span>✨</span>
+              <span>2-클립 전체 시퀀스 (20초) 복사</span>
+            </button>
+            <div class="flex gap-2">
+              <button onclick="copyToClipboard(window.videoClip1Prompt, '📋 [클립 1 프롬프트] 복사 완료!', this)" class="flex-1 py-2 px-3 rounded-full text-xs font-medium bg-white/10 hover:bg-white/15 text-white border border-white/10 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 apple-pill-btn">
+                🎬 클립 1 복사 (0s~10s)
+              </button>
+              <button onclick="copyToClipboard(window.videoClip2Prompt, '📋 [클립 2 프롬프트] 복사 완료!', this)" class="flex-1 py-2 px-3 rounded-full text-xs font-medium bg-white/10 hover:bg-white/15 text-white border border-white/10 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 apple-pill-btn">
+                🎬 클립 2 복사 (10s~20s 연속)
+              </button>
+            </div>
+          `;
+        }
+
+        const countEl = document.getElementById('charWordCount');
+        if (countEl) countEl.innerText = `클립1: ${clip1FullPrompt.length}자 | 클립2: ${clip2FullPrompt.length}자`;
+        return;
+      }
+
             const rawInput = document.getElementById('masterInput').value.trim() || "A captivating character in cinematic atmosphere";
       
       // Auto-switch visual mood to action/cinema if sports keywords detected and user didn't manually lock
