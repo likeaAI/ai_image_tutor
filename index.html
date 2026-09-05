@@ -3080,46 +3080,162 @@
       }
     ];
 
-    // Tuning Repositories
+        // Tuning Repositories with Intuitive Plain-Language Explanations
     const TUNING_REPO = {
       cameras: [
-        { id: 'hasselblad_85mm', label: '핫셀블라드 85mm f/1.4', prompt: 'shot on Hasselblad H6D-100c medium format camera with 85mm f/1.4 lens, ultra-sharp detail' },
-        { id: 'anamorphic_35mm', label: '35mm 아나모픽 렌즈', prompt: 'shot on 35mm anamorphic lens, horizontal blue streak flares, smooth oval bokeh' },
-        { id: 'leica_noctilux', label: '라이카 50mm f/0.95', prompt: 'shot on Leica M11 with Noctilux 50mm f/0.95 lens, creamy organic bokeh' },
-        { id: 'sony_90mm_macro', label: '소니 90mm f/2.8 매크로', prompt: 'shot on 90mm f/2.8 Macro lens, tack-sharp focal plane, razor-sharp edge micro-details' },
-        { id: 'zeiss_21mm', label: '자이스 21mm 시네 광각', prompt: 'Zeiss 21mm ultra-wide cinema prime lens, zero geometric distortion' },
-        { id: 'master_prime', label: '50mm 마스터 프라임', prompt: 'Arri Master Prime 50mm lens, ultra-clean commercial sharpness' }
+        { 
+          id: 'hasselblad_85mm', 
+          label: '핫셀블라드 85mm', 
+          tag: '인물 화질 끝판왕', 
+          desc: '인물 얼굴은 칼날처럼 또렷하고 배경은 부드럽게 날아가는(아웃포커스) 보그 화보용 중형 센서 렌즈', 
+          prompt: 'shot on Hasselblad H6D-100c medium format camera with 85mm f/1.4 lens, ultra-sharp detail' 
+        },
+        { 
+          id: 'anamorphic_35mm', 
+          label: '35mm 아나모픽', 
+          tag: '영화관 와이드 화면', 
+          desc: '영화 스크린 비율. 가로로 은은하게 번지는 블루 플레어와 감성적인 타원형 보케(빛망울) 연출', 
+          prompt: 'shot on 35mm anamorphic lens, horizontal blue streak flares, smooth oval bokeh' 
+        },
+        { 
+          id: 'leica_noctilux', 
+          label: '라이카 50mm f/0.95', 
+          tag: '녹아내리는 몽환 보케', 
+          desc: '극도로 얕은 심도. 어두운 밤에도 풍부한 빛을 머금으며 배경이 부드러운 크림처럼 녹아내리는 예술 렌즈', 
+          prompt: 'shot on Leica M11 with Noctilux 50mm f/0.95 lens, creamy organic bokeh' 
+        },
+        { 
+          id: 'sony_90mm_macro', 
+          label: '소니 90mm 매크로', 
+          tag: '1cm 초밀착 접사', 
+          desc: '땀방울, 눈동자 홍채, 시계 톱니, 음식 표면의 극미세 텍스처까지 모공 단위로 선명하게 포착', 
+          prompt: 'shot on 90mm f/2.8 Macro lens, tack-sharp focal plane, razor-sharp edge micro-details' 
+        },
+        { 
+          id: 'zeiss_21mm', 
+          label: '자이스 21mm 광각', 
+          tag: '왜곡 없는 웅장한 대공간', 
+          desc: '가장자리 찌그러짐 없이 웅장한 건물, 사막, 대자연, 거실을 시원하고 광활하게 담아내는 풍경용 렌즈', 
+          prompt: 'Zeiss 21mm ultra-wide cinema prime lens, zero geometric distortion' 
+        },
+        { 
+          id: 'master_prime', 
+          label: '아리 50mm 프라임', 
+          tag: '헐리우드 상업 영화 표준', 
+          desc: '넷플릭스·헐리우드 영화의 정석. 흠잡을 데 없이 깔끔하고 눈이 편안한 최고급 상업 영상 해상력', 
+          prompt: 'Arri Master Prime 50mm lens, ultra-clean commercial sharpness' 
+        }
       ],
       lighting: [
-        { id: 'volumetric_godrays', label: '볼류메트릭 빛내림', prompt: 'dramatic volumetric god-rays piercing through subtle cinematic haze' },
-        { id: 'softbox_3point', label: '3점 스튜디오 소프트박스', prompt: 'master commercial 3-point studio softbox lighting with key, fill, and subtle rim light' },
-        { id: 'chiaroscuro', label: '키아로스쿠로 명암 대비', prompt: 'dramatic chiaroscuro lighting, deep sculptural shadow gradients and bright highlights' },
-        { id: 'golden_hour', label: '골든 아워 황혼 역광', prompt: 'warm golden hour backlight, atmospheric soft flare, glowing rim silhouette' },
-        { id: 'neon_rim', label: '사이버펑크 네온 림라이트', prompt: 'vibrant neon cyan and magenta rim lighting separating subject with intense edge glow' },
-        { id: 'high_key', label: '하이키 무영광', prompt: 'flawless high-key commercial illumination, pure shadowless clarity' },
-        { id: 'candlelight', label: '촛불 바로크 단일광', prompt: 'intimate single candle flame lighting casting warm flickering glow' }
+        { 
+          id: 'golden_hour', 
+          label: '골든아워 노을 역광', 
+          tag: '따뜻한 감성 노을빛', 
+          desc: '인물 실루엣 테두리가 황금빛으로 물드는 가장 감성적이고 부드러운 해질녘 햇살 연출', 
+          prompt: 'warm golden hour backlight, atmospheric soft flare, glowing rim silhouette' 
+        },
+        { 
+          id: 'softbox_3point', 
+          label: '3점 스튜디오 소프트박스', 
+          tag: '그림자 없는 깨끗한 화보', 
+          desc: '광고 화보의 정석. 칙칙한 그림자를 부드럽게 지우고 인물의 이목구비를 가장 화사하고 또렷하게 살리는 조명', 
+          prompt: 'master commercial 3-point studio softbox lighting with key, fill, and subtle rim light' 
+        },
+        { 
+          id: 'volumetric_godrays', 
+          label: '볼류메트릭 빛내림', 
+          tag: '신비로운 숲/창문 빛줄기', 
+          desc: '안개나 숲, 성당 창문 사이로 쏟아져 내리는 성스럽고 웅장한 영화적 햇살 기둥(God-Rays)', 
+          prompt: 'dramatic volumetric god-rays piercing through subtle cinematic haze' 
+        },
+        { 
+          id: 'chiaroscuro', 
+          label: '키아로스쿠로 명암 대비', 
+          tag: '영화 같은 극적 명암', 
+          desc: '렘브란트 명화풍. 빛과 짙은 어둠의 강렬한 대비로 깊은 고독감과 시네마틱한 입체감을 연출', 
+          prompt: 'dramatic chiaroscuro lighting, deep sculptural shadow gradients and bright highlights' 
+        },
+        { 
+          id: 'high_key', 
+          label: '하이키 무영광', 
+          tag: '애플 스타일 순백 클린광', 
+          desc: '애플 제품 광고 스타일. 그림자 없이 전체 화면을 맑고 깨끗하게 밝혀 미래지향적이고 투명한 분위기 연출', 
+          prompt: 'flawless high-key commercial illumination, pure shadowless clarity' 
+        },
+        { 
+          id: 'neon_rim', 
+          label: '사이버 네온 림라이트', 
+          tag: '화려한 밤거리 엣지광', 
+          desc: '어두운 밤거리에서 청록(Cyan)과 마젠타(Magenta) 네온 불빛이 피사체 외곽선을 날카롭게 떼어내는 조명', 
+          prompt: 'vibrant neon cyan and magenta rim lighting separating subject with intense edge glow' 
+        },
+        { 
+          id: 'candlelight', 
+          label: '촛불·호롱불 단일광', 
+          tag: '아늑한 고풍 밤 감성', 
+          desc: '어둠 속 촛불 하나가 일렁이며 얼굴 한쪽을 따뜻하게 비추는 아늑하고 클래식한 분위기', 
+          prompt: 'intimate single candle flame lighting casting warm flickering glow' 
+        },
+        { 
+          id: 'rain_street_reflection', 
+          label: '비안개 & 아스팔트 반사', 
+          tag: '축축한 빗길 감성', 
+          desc: '비에 젖은 아스팔트 물웅덩이에 반사되는 가로등 빛과 공기 중 몽환적인 물안개 연출', 
+          prompt: 'rain-slicked asphalt puddle reflections, glistening wet ground bounce light, misty humid atmosphere' 
+        }
       ],
       textures: [
-        { id: 'natural_skin', label: '실사 모공 & 물광 피부', prompt: 'hyper-realistic natural skin texture, visible fine pores, radiant dewy glass skin, unretouched' },
-        { id: 'micro_condensation', label: '정밀 결로 & 물방울', prompt: 'hyper-detailed condensation droplets and micro-splashes frozen smoothly in air' },
-        { id: 'impasto_oil', label: '두터운 임파스토 3D 유화', prompt: 'heavy impasto oil painting technique, visible thick 3D paint textures, palette knife marks' },
-        { id: 'silkscreen', label: '실크스크린 망점', prompt: 'authentic silkscreen print texture, subtle misregistration, tactile matte ink layer' }
+        { 
+          id: 'natural_skin', 
+          label: '실사 모공 & 물광 피부', 
+          tag: '플라스틱 밀랍 피부 방지', 
+          desc: 'AI 특유의 어색하게 번들거리는 밀랍 인형 피부를 없애고, 실제 사람의 미세 모공, 솜털, 자연스러운 피부결 연출', 
+          prompt: 'hyper-realistic natural skin texture, visible fine pores, fine peach fuzz, radiant dewy glass skin, unretouched' 
+        },
+        { 
+          id: 'micro_condensation', 
+          label: '정밀 결로 & 물방울', 
+          tag: '튀는 땀방울/음료 청량감', 
+          desc: '시원한 캔 표면의 맺힌 물방울, 운동선수의 튀는 땀방울, 빗방울을 모핑 없이 공중에 얼린 채 선명하게 포착', 
+          prompt: 'hyper-detailed condensation droplets and micro-splashes frozen smoothly in air' 
+        },
+        { 
+          id: 'impasto_oil', 
+          label: '두터운 임파스토 3D 유화', 
+          tag: '나이프로 얹은 입체 물감결', 
+          desc: '반 고흐 명화처럼 캔버스 위에 유화 물감이 두껍게 얹혀 손으로 만져질 듯한 3D 입체 나이프 붓터치 질감', 
+          prompt: 'heavy impasto oil painting technique, visible thick 3D paint textures, palette knife marks' 
+        },
+        { 
+          id: 'silkscreen', 
+          label: '빈티지 실크스크린 망점', 
+          tag: '레트로 팝아트 잉크 질감', 
+          desc: '앤디 워홀 팝아트나 빈티지 만화책 인쇄물처럼 미세한 인쇄 망점과 매트한 판화 잉크 질감', 
+          prompt: 'authentic silkscreen print texture, subtle misregistration, tactile matte ink layer' 
+        },
+        { 
+          id: 'brushed_metal', 
+          label: '브러시드 메탈 & 헤어라인', 
+          tag: '차가운 금속 테크 반사감', 
+          desc: '맥북, 롤렉스 시계, 자동차 휠 등의 차가운 금속 표면에 새겨진 정밀한 헤어라인과 은은한 빛 반사', 
+          prompt: 'anodized brushed aluminum surface with micro-hairline textures and precision specular highlights' 
+        }
       ],
       colors: [
-        { id: 'kodak_portra', label: '코닥 포트라 400 필름', prompt: 'graded with Kodak Portra 400 aesthetic, soft natural contrast, warm organic grain' },
-        { id: 'teal_orange', label: '틸 앤 오렌지', prompt: 'Hollywood blockbuster teal and orange cinematic color grading' },
-        { id: 'fujifilm_velvia', label: '후지필름 벨비아 50', prompt: 'Fujifilm Velvia rich saturated color palette, vivid greens and deep blues' },
-        { id: 'apple_minimal', label: '애플 미니멀 뉴트럴', prompt: 'Apple commercial aesthetic, pure neutral white balance, deep true blacks' },
-        { id: 'gogh_cobalt', label: '고흐 코발트 & 골드', prompt: 'palette of vibrant cobalt blue, chrome yellow, cadmium gold, and deep ultramarine' }
+        { id: 'kodak_portra', label: '코닥 포트라 400 필름', tag: '따뜻한 아날로그 필름톤', desc: '부드러운 계조와 따스한 피부톤을 만들어주는 클래식 필름 룩', prompt: 'graded with Kodak Portra 400 aesthetic, soft natural contrast, warm organic grain' },
+        { id: 'teal_orange', label: '틸 앤 오렌지', tag: '헐리우드 영화 색감', desc: '배경은 차가운 청록(Teal), 인물은 따뜻한 오렌지(Orange)로 돋보이게 하는 블록버스터 색보정', prompt: 'Hollywood blockbuster teal and orange cinematic color grading' },
+        { id: 'fujifilm_velvia', label: '후지필름 벨비아 50', tag: '선명하고 생생한 채도', desc: '초록 숲과 파란 바다의 색채를 눈이 시리도록 생생하게 끌어올리는 풍경 전용 필름', prompt: 'Fujifilm Velvia rich saturated color palette, vivid greens and deep blues' },
+        { id: 'apple_minimal', label: '애플 미니멀 뉴트럴', tag: '왜곡 없는 순백 밸런스', desc: '과장된 필터 없이 순수한 화이트와 깊은 블랙의 완벽한 밸런스를 보여주는 미니멀 색감', prompt: 'Apple commercial aesthetic, pure neutral white balance, deep true blacks' },
+        { id: 'gogh_cobalt', label: '고흐 코발트 & 골드', tag: '명화의 강렬한 원색', desc: '코발트 블루와 크롬 옐로우의 강렬한 보색 조화로 예술적 감동을 주는 명화 색채', prompt: 'palette of vibrant cobalt blue, chrome yellow, cadmium gold, and deep ultramarine' }
       ],
       ethnicities: [
-        { id: 'korean', label: '🇰🇷 한국인', prompt: 'authentic Korean ethnicity, elegant East Asian facial structure, refined Korean facial features, clear natural glass skin' },
-        { id: 'japanese', label: '🇯🇵 일본인', prompt: 'authentic Japanese ethnicity, delicate facial features, sleek modern Tokyo editorial aesthetic' },
-        { id: 'east_asian', label: '🌏 동아시아', prompt: 'stunning East Asian ethnicity, modern cosmopolitan chic facial harmony' },
-        { id: 'nordic', label: '👱‍♀️ 북유럽', prompt: 'striking Nordic Scandinavian ethnicity, sharp jawline, high cheekbones, piercing gaze' },
-        { id: 'latina', label: '💃 라틴', prompt: 'gorgeous Latina ethnicity, warm sun-kissed olive complexion, expressive features' },
-        { id: 'african', label: '👑 아프리카계', prompt: 'glorious African-heritage ethnicity, radiant deep ebony skin, sculptural bone structure' },
-        { id: 'none', label: '미지정', prompt: '' }
+        { id: 'korean', label: '🇰🇷 한국인', tag: '우아한 동양적 미', desc: '자연스러운 피부결과 또렷한 한국인 이목구비 보장', prompt: 'authentic Korean ethnicity, elegant East Asian facial structure, refined Korean facial features, clear natural glass skin' },
+        { id: 'japanese', label: '🇯🇵 일본인', tag: '도쿄 에디토리얼 감성', desc: '섬세하고 감성적인 일본 패션 매거진 스타일', prompt: 'authentic Japanese ethnicity, delicate facial features, sleek modern Tokyo editorial aesthetic' },
+        { id: 'east_asian', label: '🌏 동아시아', tag: '세련된 아시안 시크', desc: '현대적이고 도회적인 매력의 동아시아 인물 연출', prompt: 'stunning East Asian ethnicity, modern cosmopolitan chic facial harmony' },
+        { id: 'nordic', label: '👱‍♀️ 북유럽', tag: '날렵한 턱선과 옅은 눈동자', desc: '북유럽 스칸디나비안 특유의 날렵한 골격과 깊은 시선', prompt: 'striking Nordic Scandinavian ethnicity, sharp jawline, high cheekbones, piercing gaze' },
+        { id: 'latina', label: '💃 라틴', tag: '건강한 올리브 피부', desc: '햇살을 머금은 올리브 피부톤과 화려하고 생동감 넘치는 표정', prompt: 'gorgeous Latina ethnicity, warm sun-kissed olive complexion, expressive features' },
+        { id: 'african', label: '👑 아프리카계', tag: '빛나는 흑진주 피부', desc: '조각 같은 골격과 은은한 빛을 반사하는 고급스러운 에보니 피부', prompt: 'glorious African-heritage ethnicity, radiant deep ebony skin, sculptural bone structure' },
+        { id: 'none', label: '미지정', tag: '자유 생성', desc: '특정 인종을 지정하지 않고 AI에게 자율성을 부여', prompt: '' }
       ]
     };
 
@@ -4581,13 +4697,13 @@ You MUST output ONLY a valid JSON object matching this schema exactly (no markdo
         anatomy.subjectKo = rawInput;
         anatomy.subjectEn = optimizedEnglishSubject || "A captivating character standing poised in authentic setting";
         
-        anatomy.opticsKo = camObj ? `${camObj.label} (초점 및 피사계 심도 제어)` : "전문 시네마 단렌즈 광학";
+        anatomy.opticsKo = camObj ? `${camObj.label} [${camObj.tag}] — ${camObj.desc}` : "전문 시네마 단렌즈 광학";
         anatomy.opticsEn = camObj ? camObj.prompt : "Shot with master cinema lens, sharp focal plane";
 
-        anatomy.lightingKo = lightObj ? `${lightObj.label} (입체적 명암 및 광원 연출)` : "방향성 자연 조명과 부드러운 그림자";
+        anatomy.lightingKo = lightObj ? `${lightObj.label} [${lightObj.tag}] — ${lightObj.desc}` : "방향성 자연 조명과 부드러운 그림자";
         anatomy.lightingEn = lightObj ? lightObj.prompt : "Natural ambient lighting with soft contrast falloff";
 
-        anatomy.textureKo = texObj ? `${texObj.label} · ${colObj ? colObj.label : '자연스러운 색채'}` : "자연스러운 표면 질감과 유기적 톤";
+        anatomy.textureKo = texObj ? `${texObj.label} [${texObj.tag}] — ${texObj.desc}` : "자연스러운 표면 질감과 유기적 톤";
         anatomy.textureEn = [texObj ? texObj.prompt : "", colObj ? colObj.prompt : ""].filter(Boolean).join(", ") || "Natural unretouched organic texture";
       }
 
